@@ -10,3 +10,4 @@ coverage/
 !.env.example
 *.tsbuildinfo
 certs/*.crt
+!certs/supabase-ca.crt

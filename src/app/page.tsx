@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import WaitlistForm from "@/components/WaitlistForm";
+import Brand from "@/components/Brand";
 
 const pillars = [
   {
@@ -33,8 +34,7 @@ export default function Home() {
         <div className="hero-content">
           <header className="site-header">
             <Link href="/" className="brand" aria-label="Seila home">
-              {/* Replace the wordmark with the supplied logo asset when provided. */}
-              <span className="brand-wordmark">seila</span>
+              <Brand />
             </Link>
             <span className="coming-soon">Coming soon</span>
           </header>

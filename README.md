@@ -5,14 +5,15 @@ The existing `public.affiliate_products` catalogue is not queried or changed by 
 
 ## Local development
 
-1. Use Node.js 20.9 or newer and run `npm install`.
+1. Use Node.js 24 and run `npm install`.
 2. Keep the existing Supabase connection in ignored `.env`. Add a random
    `WAITLIST_RATE_LIMIT_SECRET` of at least 32 characters. See `.env.example`
-   for variable names. Download the project's database CA certificate from
-   Supabase Database Settings → SSL Configuration and set
-   `SUPABASE_DB_CA_FILE` to its local path. Never commit `.env` or the local CA file.
+   for variable names. The public Supabase root CA is included in `certs/`;
+   no manual certificate download or trust-store change is needed. Never commit `.env`.
 3. Run `npm run dev` and open `http://localhost:3000`.
 4. Run `npm test`, `npm run typecheck`, and `npm run build`.
+5. Run `node scripts/check-db-tls.mjs` to verify the real connection with read-only
+   queries. It uses the same connection settings as the signup endpoint.
 
 The form uses a server-only PostgreSQL connection. A dry local build does not
 create tables or submit signups. Until the waitlist migration is approved and
@@ -45,9 +46,17 @@ Supabase project:
   `NEXT_PUBLIC_` prefix.
 - `WAITLIST_RATE_LIMIT_SECRET`: a random secret of at least 32 characters.
   Keep it stable across deployments so rate buckets behave consistently.
-- `SUPABASE_DB_CA_CERT`: the database CA certificate PEM from Supabase's
-  SSL Configuration panel. The Node client verifies TLS against this CA.
 - `NEXT_PUBLIC_PRIVACY_CONTACT_EMAIL`: the real Seila privacy contact address.
+
+The public CA is bundled in the Vercel function automatically. No extra CA
+variable is required. `SUPABASE_DB_CA_CERT` (PEM) and `SUPABASE_DB_CA_FILE`
+(local path) remain available as optional overrides during certificate rotation.
+See `certs/README.md` for the official source, fingerprint, and expiry.
+Node's bundled and Windows system CA stores were both tested and rejected the
+pooler's private Supabase CA chain. `NODE_USE_SYSTEM_CA=1` alone therefore does
+not solve this connection. `NODE_EXTRA_CA_CERTS` is a secure process-wide
+alternative when set before Node starts, but the bundled, connection-specific
+CA avoids runtime flags and separate deployment setup.
 
 Vercel detects Next.js and runs `npm run build`. Configure a WAF rate rule for
 `POST /api/waitlist` as an extra outer layer of abuse protection. The endpoint
@@ -55,8 +64,12 @@ already has a database-backed limit of eight attempts per client per 15 minutes,
 a hidden honeypot, request size cap, origin check, and generic duplicate response.
 The service reads Vercel's forwarded client IP only to derive a keyed rate token.
 
-Before launch, add the supplied airplane-and-hanger logo to the brand slot in
-`src/app/page.tsx` and `src/app/privacy/page.tsx`, set the real privacy contact,
+Before launch, place the real logo at `public/images/seila-logo.svg` or
+`public/images/seila-logo.png` (SVG takes precedence), then rebuild. Both page
+headers automatically use it. Until then, the existing text wordmark remains.
+Set the real `NEXT_PUBLIC_PRIVACY_CONTACT_EMAIL` and rebuild; when empty, the
+privacy page displays the existing pending-contact notice, never a fake address.
+Then
 review the privacy notice with the site's owner, apply the migration with approval,
 and test a real signup plus a case-insensitive duplicate in the target environment.
 No code in this repository deploys itself or pushes to a remote.

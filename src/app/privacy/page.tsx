@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Brand from "@/components/Brand";
 
 export const metadata = {
   title: "Privacy — Seila",
@@ -11,7 +12,7 @@ export default function PrivacyPage() {
     <main className="privacy-page">
       <div className="privacy-shell">
         <Link href="/" className="brand brand-back" aria-label="Back to Seila home">
-          <span className="brand-wordmark">seila</span>
+          <Brand />
         </Link>
         <h1>Privacy at Seila</h1>
         <p className="privacy-lede">
