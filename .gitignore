@@ -1,0 +1,11 @@
+.env
+.deps/
+__pycache__/
+datafeed_*.csv
+node_modules/
+.next/
+out/
+coverage/
+.env.*
+!.env.example
+*.tsbuildinfo
