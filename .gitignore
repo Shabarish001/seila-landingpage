@@ -11,3 +11,6 @@ coverage/
 *.tsbuildinfo
 certs/*.crt
 !certs/supabase-ca.crt
+
+.vercel
+.env*

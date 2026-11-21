@@ -1,0 +1,16 @@
+.env
+.env.*
+.git
+.deps
+.next
+node_modules
+datafeed_*.csv
+scripts
+sql
+tests
+docs
+*.md
+requirements-awin.txt
+*.tsbuildinfo
+.agents
+.codex

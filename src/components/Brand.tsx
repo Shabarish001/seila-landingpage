@@ -8,13 +8,15 @@ export default function Brand() {
   );
   if (!filename) return <span className="brand-wordmark">seila</span>;
   return (
+    <span style={{ display: "block", width: 150, height: 80, overflow: "hidden" }}>
     <Image
       src={`/images/${filename}`}
       alt="Seila"
-      width={110}
-      height={44}
+      width={150}
+      height={150}
       unoptimized
-      style={{ width: "auto", height: 34, maxWidth: 150, objectFit: "contain" }}
+      style={{ width: 150, height: 150, transform: "translateY(-35px)", objectFit: "contain" }}
     />
+    </span>
   );
 }
